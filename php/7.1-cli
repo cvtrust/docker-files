@@ -1,0 +1,64 @@
+FROM ubuntu:xenial
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && apt-get install -y apt-utils software-properties-common
+RUN echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu xenial main" > \
+    /etc/apt/sources.list.d/ondrej-php-xenial.list
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C
+
+RUN apt-get update \
+    && apt-get install -y php7.1 \
+    php-bcmath \
+    php-common \
+    php-dev \
+    php-curl \
+    php-gmp \
+    php-igbinary \
+    php-json \
+    php-ldap \
+    php-redis \
+    php-soap \
+    php-xml \
+    php-intl \
+    php-mbstring \
+    php-zip \
+    php-pear
+
+RUN apt-get install -y locales \
+    && locale-gen en_US.UTF-8 \
+    && update-locale
+
+# Microsoft SQL  Server
+RUN apt-get install -y curl apt-transport-https ca-certificates sudo
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/16.04/mssql-server.list > /etc/apt/sources.list.d/mssql-server.list
+RUN apt-get update -y --fix-missing
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+
+RUN apt-get update -y --fix-missing \
+    && apt-get install -y unixodbc-dev-* \
+    && ACCEPT_EULA=Y apt-get install -y mssql-tools msodbcsql
+
+RUN pecl install sqlsrv \
+    && pecl install pdo_sqlsrv
+
+RUN locale-gen en_US en_US.UTF-8 && dpkg-reconfigure locales
+RUN ln /opt/mssql-tools/bin/sqlcm* /bin/sqlcmd
+
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Copy configuration
+COPY config/php-cli.ini /etc/php/7.1/cli/conf.d/php.ini
+COPY config/php7.ini /etc/php/7.1/cli/conf.d/
+COPY config/amqp.ini /etc/php/7.1/cli/conf.d/
+COPY config/redis.ini /etc/php/7.1/cli/conf.d/
+COPY config/mssql.ini /etc/php/7.1/cli/conf.d/
+
+RUN mkdir -p /app
+
+WORKDIR /app
+
+VOLUME ["/app"]
