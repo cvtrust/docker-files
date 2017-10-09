@@ -1,0 +1,24 @@
+FROM californiasvaluedtrust/php:7.1-fpm
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update \
+    && apt-get install -y apt-utils \
+    software-properties-common \
+    curl \
+    apt-transport-https \
+    ca-certificates \
+    sudo \
+    locales \
+    && echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu xenial main" > /etc/apt/sources.list.d/ondrej-php-xenial.list \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C \
+    && apt-get update \
+    && apt-get install -y php-xdebug \
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && apt-get -y --purge remove tex.\*-doc$ \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm -f /etc/php/7.1/fpm/conf.d/20-xdebug.ini
+
+# Copy configuration
+COPY config/xdebug.ini /etc/php/7.1/fpm/conf.d/

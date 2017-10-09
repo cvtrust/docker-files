@@ -1,0 +1,65 @@
+FROM ubuntu:xenial
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update \
+    && apt-get install -y apt-utils \
+    software-properties-common \
+    curl \
+    apt-transport-https \
+    ca-certificates \
+    sudo \
+    locales \
+    && echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu xenial main" > /etc/apt/sources.list.d/ondrej-php-xenial.list \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C \
+    && apt-get update \
+    && apt-get install -y php7.1 \
+        php-amqp \
+        php-bcmath \
+        php-common \
+        php-dev \
+        php-curl \
+        php-igbinary \
+        php-json \
+        php-ldap \
+        php-redis \
+        php-soap \
+        php-xml \
+        php-intl \
+        php-mbstring \
+        php-zip \
+        php-pear \
+        php7.1-fpm \
+    && locale-gen en_US.UTF-8 && update-locale \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/ubuntu/16.04/mssql-server.list > /etc/apt/sources.list.d/mssql-server.list \
+    && apt-get update -y --fix-missing \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get install -y unixodbc-dev-* \
+    && apt-get update -y --fix-missing && ACCEPT_EULA=Y apt-get install -y mssql-tools \
+    && apt-get update -y --fix-missing && ACCEPT_EULA=Y apt-get install -y msodbcsql \
+    && pecl install sqlsrv && pecl install pdo_sqlsrv \
+    && locale-gen en_US en_US.UTF-8 && dpkg-reconfigure locales \
+        && ln /opt/mssql-tools/bin/sqlcm* /bin/sqlcmd \
+    && apt-get remove -y apache2* \
+        && apt-get remove -y python3* \
+        && apt-get remove -y python3.5-minimal \
+        && apt-get autoremove -y \
+        && apt-get clean -y \
+        && apt-get -y --purge remove tex.\*-doc$ \
+        && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/www \
+    && mkdir -p /var/www
+
+# Copy configuration
+COPY config/php.ini /etc/php/7.1/fpm/conf.d/10-php.ini
+COPY config/php7.ini /etc/php/7.1/fpm/conf.d/
+COPY config/mssql.ini /etc/php/7.1/fpm/conf.d/
+COPY config/fpm/php-fpm.conf /etc/php/7.1/fpm/
+COPY config/fpm/pool.d /etc/php/7.1/fpm/pool.d
+
+WORKDIR /var/www
+
+EXPOSE 9000
+
+CMD ["php-fpm7.1"]
