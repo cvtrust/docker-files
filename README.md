@@ -36,7 +36,7 @@ docker push californiasvaluedtrust/php:7.2-zts-stretch-xdebug
 
 #### Building
 ```bash
-docker build -f .\php\7.3.0-rc-zts-stretch -t californiasvaluedtrust/php:7.3.0-zts-stretch .\php\
+docker build -f .\php\7.3.0-zts-stretch -t californiasvaluedtrust/php:7.3.0-zts-stretch .\php\
 ```
 
 #### Pushing
