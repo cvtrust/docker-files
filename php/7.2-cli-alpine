@@ -2,7 +2,7 @@ FROM php:7.2-cli-alpine
 
 ENV RABBITMQ_VERSION v0.8.0
 ENV PHP_AMQP_VERSION v1.9.3
-ENV PHP_REDIS_VERSION 3.1.4
+ENV PHP_REDIS_VERSION 4.1.1
 
 # persistent / runtime deps
 ENV PHPIZE_DEPS \
@@ -59,7 +59,6 @@ RUN set -xe \
         && ./configure  \
         && make  \
         && make install \
-        && make test \
     && git clone --branch ${PHP_REDIS_VERSION} https://github.com/phpredis/phpredis /tmp/phpredis \
         && cd /tmp/phpredis \
         && phpize  \

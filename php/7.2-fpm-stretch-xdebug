@@ -1,0 +1,33 @@
+FROM californiasvaluedtrust/php:7.2-fpm-stretch
+
+ENV PHP_XDEBUG_VERSION master
+
+# persistent / runtime deps
+ENV PHPIZE_DEPS \
+    autoconf \
+    cmake \
+    file \
+    g++ \
+    gcc \
+    libc-dev \
+    make \
+    git \
+    re2c
+
+RUN set -xe \
+        && apt-get update \
+        && apt-get install -y $PHPIZE_DEPS \
+            locales \
+            apt-transport-https \
+        && git clone --branch ${PHP_XDEBUG_VERSION} https://github.com/xdebug/xdebug /tmp/php-xdebug \
+            && cd /tmp/php-xdebug \
+            && phpize  \
+            && ./configure  \
+            && make  \
+            && make install \
+            && make test \
+        && apt-get remove -y $PHPIZE_DEPS \
+        && rm -rf /var/lib/apt/lists/* \
+        && rm -rf /tmp/*
+
+COPY config/xdebug.ini /usr/local/etc/php/conf.d/

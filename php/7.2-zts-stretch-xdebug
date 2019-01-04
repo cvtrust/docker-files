@@ -1,0 +1,37 @@
+FROM californiasvaluedtrust/php:7.2-zts-stretch
+
+ENV PHP_XDEBUG_VERSION master
+
+ENV XDEBUG_HOST=172.17.0.1
+
+# persistent / runtime deps
+ENV PHPIZE_DEPS \
+    autoconf \
+    cmake \
+    file \
+    g++ \
+    gcc \
+    libc-dev \
+    make \
+    git \
+    re2c
+
+RUN apt-get update \
+    && apt-get install -y $PHPIZE_DEPS \
+    && git clone --branch ${PHP_XDEBUG_VERSION} https://github.com/xdebug/xdebug /tmp/php-xdebug \
+            && cd /tmp/php-xdebug \
+            && phpize  \
+            && ./configure  \
+            && make  \
+            && make install \
+            && make test \
+    && apt-get remove -y $PHPIZE_DEPS \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* \
+    && rm -rf /app \
+    && mkdir /app
+
+# Copy configuration
+COPY config/xdebug-cli.ini /usr/local/etc/php/conf.d/
+
+WORKDIR /app

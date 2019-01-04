@@ -1,4 +1,4 @@
-FROM php:7.2-zts-stretch
+FROM php:7.3-rc-zts-stretch
 
 ENV RABBITMQ_VERSION v0.8.0
 ENV PHP_AMQP_VERSION v1.9.3
@@ -26,6 +26,7 @@ RUN apt-get update \
         wget \
         libsodium-dev \
         zlib1g-dev \
+        libzip-dev \
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
         && curl https://packages.microsoft.com/config/debian/8/prod.list \
             > /etc/apt/sources.list.d/mssql-release.list \
@@ -36,9 +37,9 @@ RUN apt-get update \
         && locale-gen \
         && apt-get update \
         && apt-get -y --no-install-recommends install msodbcsql unixodbc-dev libxml2 libldap2-dev libicu-dev \
-        && wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u9_amd64.deb \
-        && dpkg -i libssl1.0.0_1.0.1t-1+deb8u9_amd64.deb \
-        && rm -f libssl1.0.0_1.0.1t-1+deb8u9_amd64.deb
+        && wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.1_1.1.0j-1~deb9u1_amd64.deb \
+        && dpkg -i libssl1.1_1.1.0j-1~deb9u1_amd64.deb \
+        && rm -f libssl1.1_1.1.0j-1~deb9u1_amd64.deb
 
 RUN docker-php-ext-install \
         pdo \

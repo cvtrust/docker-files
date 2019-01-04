@@ -1,6 +1,7 @@
-FROM californiasvaluedtrust/php:7.2-fpm
+FROM californiasvaluedtrust/php:7.2-cli-alpine
 
 ENV PHP_XDEBUG_VERSION master
+ENV XDEBUG_HOST=172.17.0.1
 
 # persistent / runtime deps
 ENV PHPIZE_DEPS \
@@ -29,4 +30,4 @@ RUN set -xe \
     && rm -rf /tmp/*
 
 # Copy custom configuration
-COPY config/xdebug.ini /usr/local/etc/php/conf.d/
+COPY config/xdebug-cli.ini /usr/local/etc/php/conf.d/
