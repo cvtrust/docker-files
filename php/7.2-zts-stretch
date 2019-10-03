@@ -36,9 +36,9 @@ RUN apt-get update \
         && locale-gen \
         && apt-get update \
         && apt-get -y --no-install-recommends install msodbcsql unixodbc-dev libxml2 libldap2-dev libicu-dev \
-        && wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u11_amd64.deb \
-        && dpkg -i libssl1.0.0_1.0.1t-1+deb8u11_amd64.deb \
-        && rm -f libssl1.0.0_1.0.1t-1+deb8u11_amd64.deb
+        && wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u12_amd64.deb \
+        && dpkg -i libssl1.0.0_1.0.1t-1+deb8u12_amd64.deb \
+        && rm -f libssl1.0.0_1.0.1t-1+deb8u12_amd64.deb
 
 RUN docker-php-ext-install \
         pdo \
