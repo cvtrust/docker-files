@@ -1,0 +1,73 @@
+FROM php:7.4-zts-buster
+
+ENV PHP_REDIS_VERSION 5.1.1
+
+# persistent / runtime deps
+ENV PHPIZE_DEPS \
+    autoconf \
+    cmake \
+    file \
+    g++ \
+    gcc \
+    libc-dev \
+    make \
+    git \
+    re2c
+
+ENV ACCEPT_EULA=Y
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends $PHPIZE_DEPS \
+        libgpgme11-dev \
+        gnupg2 \
+        libcurl4 \
+        wget \
+        zlib1g-dev \
+        libzip-dev \
+        libldap-common \
+        libldap2-dev \
+        locales \
+        apt-transport-https \
+    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+    && locale-gen
+
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+      && curl https://packages.microsoft.com/config/debian/9/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+      && apt-get update -yqq \
+      # Install Dependencies
+      && ACCEPT_EULA=Y apt-get install -y unixodbc unixodbc-dev libgss3 odbcinst msodbcsql17 \
+      && pecl install pdo_sqlsrv-5.7.1preview sqlsrv-5.7.1preview \
+      && docker-php-ext-enable pdo_sqlsrv sqlsrv \
+      && php -m | grep -q 'pdo_sqlsrv' \
+      && php -m | grep -q 'sqlsrv'
+
+RUN docker-php-ext-install \
+            ldap \
+            pcntl \
+            bcmath \
+            zip \
+    && pecl install gnupg \
+    && git clone --branch ${PHP_REDIS_VERSION} https://github.com/phpredis/phpredis /tmp/phpredis \
+        && cd /tmp/phpredis \
+        && phpize  \
+        && ./configure  \
+        && make  \
+        && make install \
+        && make test \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && composer global require hirak/prestissimo
+
+
+RUN apt-get remove -y $PHPIZE_DEPS \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* \
+    && rm -rf /app \
+    && mkdir /app
+
+# Copy configuration
+COPY config/php.ini /usr/local/etc/php/
+COPY config/php7.ini /usr/local/etc/php/conf.d/
+COPY config/redis.ini /usr/local/etc/php/conf.d/
+COPY config/gnupg.ini /usr/local/etc/php/conf.d/
+
+WORKDIR /app
