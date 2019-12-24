@@ -7,6 +7,9 @@ namespace CVTrustTest\DockerFiles\Database\SqlServer;
 use Carbon\Carbon;
 use CVTrustTest\DockerFiles\Database\DatabaseTestCase;
 
+/**
+ * @group SqlServer
+ */
 class PdoSqlServerTest extends DatabaseTestCase
 {
     /**

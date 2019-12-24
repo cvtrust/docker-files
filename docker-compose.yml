@@ -1,6 +1,15 @@
 version: "3"
 
 services:
+  test-everything:
+    image: californiasvaluedtrust/php:${PHP_IMAGE}
+    depends_on:
+      - composer-install
+      - sql-server
+    volumes:
+      - ./:/app
+    command: vendor/bin/phpunit --verbose
+
   test-sql-server:
     image: californiasvaluedtrust/php:${PHP_IMAGE}
     depends_on:
@@ -8,7 +17,7 @@ services:
       - sql-server
     volumes:
     - ./:/app
-    command: vendor/bin/phpunit --verbose
+    command: vendor/bin/phpunit --verbose --group=SqlServer
 
   composer-install:
     image: californiasvaluedtrust/php:${PHP_IMAGE}

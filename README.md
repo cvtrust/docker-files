@@ -1,7 +1,5 @@
 ### Building
 
-### PHP 7.2
-
 #### Building
 ```
 docker build -f .\php\7.2-cli-alpine -t californiasvaluedtrust/php:7.2-cli-alpine .\php\
@@ -21,6 +19,15 @@ docker build -f .\php\7.3-zts-stretch -t californiasvaluedtrust/php:7.3-zts-stre
 docker build -f .\php\7.4-zts-buster -t californiasvaluedtrust/php:7.4-zts-buster .\php\
 ```
 
+#### Testing
+```bash
+docker-compose run --rm test-everything
+docker-compose run --rm test-sql-server
+
+docker-compose down
+docker-compose rm
+```
+
 #### Pushing
 ```bash
 docker push californiasvaluedtrust/php:7.2-cli-alpine
@@ -34,6 +41,8 @@ docker push californiasvaluedtrust/php:7.2-fpm-stretch-xdebug
 
 docker push californiasvaluedtrust/php:7.2-zts-stretch
 docker push californiasvaluedtrust/php:7.2-zts-stretch-xdebug
+
+docker push californiasvaluedtrust/php:7.4-zts-buster
 ```
 
 ### PHP 7.3
