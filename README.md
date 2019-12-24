@@ -15,6 +15,10 @@ docker build -f .\php\7.2-fpm-stretch-xdebug -t californiasvaluedtrust/php:7.2-f
 
 docker build -f .\php\7.2-zts-stretch -t californiasvaluedtrust/php:7.2-zts-stretch .\php\
 docker build -f .\php\7.2-zts-stretch-xdebug -t californiasvaluedtrust/php:7.2-zts-stretch-xdebug .\php\
+
+docker build -f .\php\7.3-zts-stretch -t californiasvaluedtrust/php:7.3-zts-stretch .\php\
+
+docker build -f .\php\7.4-zts-buster -t californiasvaluedtrust/php:7.4-zts-buster .\php\
 ```
 
 #### Pushing

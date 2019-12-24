@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  test-sql-server:
+    image: californiasvaluedtrust/php:${PHP_IMAGE}
+    depends_on:
+      - composer-install
+      - sql-server
+    volumes:
+    - ./:/app
+    command: vendor/bin/phpunit --verbose
+
+  composer-install:
+    image: californiasvaluedtrust/php:${PHP_IMAGE}
+    volumes:
+    - ./:/app
+    command: composer install -q
+
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    ports:
+    - 11433:1433
+    environment:
+      - MSSQL_PID=Express
+      - ACCEPT_EULA=Y
+      - MSSQL_DATABASE=${MSSQL_DATABASE}
+      - SA_PASSWORD=${MSSQL_PASSWORD}

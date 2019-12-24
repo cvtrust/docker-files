@@ -1,0 +1,41 @@
+{
+  "name": "cvtrust/docker-files",
+  "description": "Make sure our docker files work",
+  "type": "project",
+  "license": "BSD-3-Clause",
+  "keywords": [
+  ],
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": "^7.1",
+    "ext-json": "*",
+    "ext-pcntl": "*",
+    "ext-pdo": "*",
+    "ext-posix": "*",
+    "doctrine/dbal": "^2.6",
+    "illuminate/support": "^6.0",
+    "monolog/monolog": "^1.23",
+    "nesbot/carbon": "^2.2"
+  },
+  "require-dev": {
+    "fzaninotto/faker": "^1.8",
+    "nikic/php-parser": "^4.2",
+    "phpunit/phpunit": "^7.0.1",
+    "roave/security-advisories": "dev-master"
+  },
+  "autoload-dev" : {
+    "psr-4" : {
+      "CVTrustTest\\DockerFiles\\": "tests/"
+    },
+    "files": [
+    ]
+  },
+  "scripts": {
+    "test": "phpunit --colors=always",
+    "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+  }
+}
