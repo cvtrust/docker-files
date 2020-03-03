@@ -39,20 +39,8 @@ docker push californiasvaluedtrust/php:7.2-fpm-alpine-xdebug
 docker push californiasvaluedtrust/php:7.2-fpm-stretch
 docker push californiasvaluedtrust/php:7.2-fpm-stretch-xdebug
 
-docker push californiasvaluedtrust/php:7.2-zts-stretch
-docker push californiasvaluedtrust/php:7.2-zts-stretch-xdebug
+docker push californiasvaluedtrust/php:7.3-zts-stretch
+docker push californiasvaluedtrust/php:7.3-zts-stretch-xdebug
 
 docker push californiasvaluedtrust/php:7.4-zts-buster
-```
-
-### PHP 7.3
-
-#### Building
-```bash
-docker build -f .\php\7.3-zts-stretch -t californiasvaluedtrust/php:7.3-zts-stretch .\php\
-```
-
-#### Pushing
-```bash
-docker push californiasvaluedtrust/php:7.3-zts-stretch
 ```
