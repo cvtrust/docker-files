@@ -57,7 +57,8 @@ RUN docker-php-ext-install \
         && make install \
         && make test \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer global require hirak/prestissimo \
+    && composer self-update \
+    && export COMPOSER_MEMORY_LIMIT=-1 \
     && docker-php-ext-enable sqlsrv pdo_sqlsrv \
     && apt-get remove -y $PHPIZE_DEPS \
     && rm -rf /var/lib/apt/lists/* \

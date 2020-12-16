@@ -1,4 +1,4 @@
-FROM php:7.4-zts-buster
+FROM php:7.4.0-zts-buster
 
 ENV PHP_REDIS_VERSION 5.1.1
 
@@ -56,8 +56,7 @@ RUN docker-php-ext-install \
         && make install \
         && make test \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer self-update \
-    && export COMPOSER_MEMORY_LIMIT=-1
+    && composer global require hirak/prestissimo
 
 
 RUN apt-get remove -y $PHPIZE_DEPS \

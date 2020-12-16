@@ -1,4 +1,4 @@
-FROM php:7.4-zts-buster
+FROM californiasvaluedtrust/php:7.4-zts-buster
 
 ENV PHP_REDIS_VERSION 5.1.1
 
