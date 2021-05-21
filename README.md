@@ -18,7 +18,7 @@ docker build -f ./php/7.3-zts-stretch -t californiasvaluedtrust/php:7.3-zts-stre
 
 docker build -f ./php/7.4-zts-buster -t californiasvaluedtrust/php:7.4-zts-buster ./php/
 
-docker build -f ./php/8.0.0-zts-buster -t californiasvaluedtrust/php:8.0.0-zts-buster ./php/
+docker build -f ./php/8-zts-buster -t californiasvaluedtrust/php:8-zts-buster ./php/
 ```
 
 #### Testing
@@ -46,5 +46,5 @@ docker push californiasvaluedtrust/php:7.3-zts-stretch-xdebug
 
 docker push californiasvaluedtrust/php:7.4-zts-buster
 
-docker push californiasvaluedtrust/php:8.0.0-zts-buster
+docker push californiasvaluedtrust/php:8-zts-buster
 ```

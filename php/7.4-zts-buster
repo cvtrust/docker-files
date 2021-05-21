@@ -21,6 +21,8 @@ RUN apt-get update \
         gnupg2 \
         libcurl4 \
         wget \
+        libxml2-dev \
+        libxml2 \
         zlib1g-dev \
         libzip-dev \
         libldap-common \

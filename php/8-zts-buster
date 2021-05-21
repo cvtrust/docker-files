@@ -1,4 +1,4 @@
-FROM php:8.0.0-zts-buster
+FROM php:8-zts-buster
 
 ENV PHP_REDIS_VERSION 5.3.2
 
