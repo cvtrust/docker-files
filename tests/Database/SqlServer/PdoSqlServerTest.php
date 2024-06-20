@@ -7,33 +7,28 @@ namespace CVTrustTest\DockerFiles\Database\SqlServer;
 use Carbon\Carbon;
 use CVTrustTest\DockerFiles\Database\DatabaseTestCase;
 
-/**
- * @group SqlServer
- */
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
+
+#[Group('SqlServer')]
 class PdoSqlServerTest extends DatabaseTestCase
 {
-    /**
-     * @var \PDO
-     */
-    private $dbh2017;
+    private \PDO $dbh2017;
 
-    /**
-     * @var \PDO
-     */
     private \PDO $dbh2008;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->dbh2017 = new \PDO(
-            'sqlsrv:server=sql-server;Database=master;APP=PdoSqlServerTest',
+            'sqlsrv:server=sql-server;Database=master;APP=PdoSqlServerTest;TrustServerCertificate=true',
             'sa',
             'BdTAekTAdR7cbvpu'
         );
 
         $this->dbh2008 = new \PDO(
-            'sqlsrv:server=172.16.1.49;Database=master;APP=PdoSqlServerTest',
+            'sqlsrv:server=172.16.1.49;Database=master;APP=PdoSqlServerTest;TrustServerCertificate=true',
             'cvtrptsapp',
             'CVTrptsapp99'
         );
@@ -42,8 +37,8 @@ class PdoSqlServerTest extends DatabaseTestCase
     /**
      * Can Connect
      *
-     * @test
      */
+    #[Test]
     public function it_can_connect(): void
     {
         self::assertInstanceOf(\PDO::class, $this->dbh2017);
@@ -52,8 +47,8 @@ class PdoSqlServerTest extends DatabaseTestCase
     /**
      * Can select data
      *
-     * @test
      */
+    #[Test]
     public function it_can_select_data(): void
     {
         $now = Carbon::now('UTC');
@@ -70,8 +65,8 @@ class PdoSqlServerTest extends DatabaseTestCase
     /**
      * Can handle large column data
      *
-     * @test
      */
+    #[Test]
      public function it_can_handle_large_column_data(): void
      {
          $stmt = $this->dbh2017->query('SELECT REPLICATE(\'*\', 8000)');
@@ -84,8 +79,8 @@ class PdoSqlServerTest extends DatabaseTestCase
     /**
      * Can Connect
      *
-     * @test
      */
+    #[Test]
     public function it_can_connect_2008(): void
     {
         self::assertInstanceOf(\PDO::class, $this->dbh2008);
@@ -94,8 +89,8 @@ class PdoSqlServerTest extends DatabaseTestCase
     /**
      * Can select data
      *
-     * @test
      */
+    #[Test]
     public function it_can_select_data_2008(): void
     {
         $now = Carbon::now('America/Los_Angeles');
@@ -112,8 +107,8 @@ class PdoSqlServerTest extends DatabaseTestCase
     /**
      * Can handle large column data
      *
-     * @test
      */
+    #[Test]
      public function it_can_handle_large_column_data_2008(): void
      {
          $stmt = $this->dbh2008->query('SELECT REPLICATE(\'*\', 8000)');

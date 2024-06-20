@@ -1,0 +1,74 @@
+FROM php:8.2-zts-bullseye
+
+ENV PHP_REDIS_VERSION 5.3.7
+
+# persistent / runtime deps
+ENV PHPIZE_DEPS \
+    autoconf \
+    cmake \
+    file \
+    g++ \
+    gcc \
+    libc-dev \
+    make \
+    git \
+    re2c
+
+ENV ACCEPT_EULA=Y
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends $PHPIZE_DEPS \
+        gnupg2 \
+        libcurl4 \
+        wget \
+        zlib1g-dev \
+        libzip-dev \
+        libldap-common \
+        libldap2-dev \
+        locales \
+        apt-transport-https \
+    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+    && locale-gen
+
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc \
+    && curl https://packages.microsoft.com/config/debian/11/prod.list | tee /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && ACCEPT_EULA=Y apt-get install -y libssl-dev msodbcsql18 unixodbc unixodbc-dev libgss3 odbcinst libgssapi-krb5-2 \
+    && apt-get update \
+    && pecl install sqlsrv-5.12.0 \
+              && pecl install pdo_sqlsrv-5.12.0 \
+              && docker-php-ext-enable pdo_sqlsrv sqlsrv \
+              && php -m | grep -q 'pdo_sqlsrv' \
+              && php -m | grep -q 'sqlsrv'
+
+
+COPY config/openssl.cnf /etc/ssl/openssl.cnf
+
+RUN docker-php-ext-install \
+            ldap \
+            pcntl \
+            bcmath \
+            zip \
+#    && pecl install gnupg \
+    && git clone --branch ${PHP_REDIS_VERSION} https://github.com/phpredis/phpredis /tmp/phpredis \
+        && cd /tmp/phpredis \
+        && phpize  \
+        && ./configure  \
+        && make  \
+        && make install \
+        && make test \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN apt-get remove -y $PHPIZE_DEPS \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* \
+    && rm -rf /app \
+    && mkdir /app
+
+# Copy configuration
+COPY config/php.ini /usr/local/etc/php/
+COPY config/php7.ini /usr/local/etc/php/conf.d/
+COPY config/redis.ini /usr/local/etc/php/conf.d/
+#COPY config/gnupg.ini /usr/local/etc/php/conf.d/
+
+WORKDIR /app

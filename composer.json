@@ -11,21 +11,21 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": "^7.1",
+    "php": "^8.2",
     "ext-json": "*",
     "ext-pcntl": "*",
     "ext-pdo": "*",
     "ext-posix": "*",
-    "doctrine/dbal": "^2.6",
-    "illuminate/support": "^6.0",
-    "monolog/monolog": "^1.23",
-    "nesbot/carbon": "^2.2"
+    "doctrine/dbal": "^4.0",
+    "illuminate/support": "^11.11",
+    "monolog/monolog": "^3.6",
+    "nesbot/carbon": "^3.6"
   },
   "require-dev": {
-    "fzaninotto/faker": "^1.8",
-    "nikic/php-parser": "^4.2",
-    "phpunit/phpunit": "^7.0.1",
-    "roave/security-advisories": "dev-master"
+    "fzaninotto/faker": "^1.5",
+    "nikic/php-parser": "^5.0",
+    "phpunit/phpunit": "^11.2",
+    "roave/security-advisories": "dev-latest"
   },
   "autoload-dev" : {
     "psr-4" : {

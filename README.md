@@ -21,6 +21,7 @@ docker build -f ./php/7.4-zts-buster -t californiasvaluedtrust/php:7.4-zts-buste
 docker build -f ./php/8-zts-buster -t californiasvaluedtrust/php:8-zts-buster ./php/
 docker build -f ./php/8.1-zts-buster -t californiasvaluedtrust/php:8.1-zts-buster ./php/
 docker build -f ./php/8.2-zts-bookworm -t californiasvaluedtrust/php:8.2-zts-bookworm ./php/
+docker build -f ./php/8.2-zts-bullseye -t californiasvaluedtrust/php:8.2-zts-bullseye ./php/
 ```
 
 #### Testing
@@ -50,6 +51,7 @@ docker push californiasvaluedtrust/php:7.4-zts-buster
 
 docker push californiasvaluedtrust/php:8-zts-buster
 docker push californiasvaluedtrust/php:8.2-zts-bookworm
+docker push californiasvaluedtrust/php:8.2-zts-bullseye
 docker push 
 
 ```
