@@ -11,7 +11,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": "^7.2",
+    "php": "^8.2",
     "ext-json": "*",
     "ext-pcntl": "*",
     "ext-pdo": "*",
@@ -24,7 +24,7 @@
   "require-dev": {
     "fzaninotto/faker": "^1.8",
     "nikic/php-parser": "^4.2",
-    "phpunit/phpunit": "^7.0.1",
+    "phpunit/phpunit": "^10.5",
     "roave/security-advisories": "dev-master"
   },
   "autoload-dev" : {

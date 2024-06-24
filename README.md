@@ -12,15 +12,16 @@ docker build -f ./php/7.2-fpm-stretch -t californiasvaluedtrust/php:7.2-fpm-stre
 docker build -f ./php/7.2-fpm-stretch-xdebug -t californiasvaluedtrust/php:7.2-fpm-stretch-xdebug ./php/
 
 docker build -f ./php/7.2-zts-stretch -t californiasvaluedtrust/php:7.2-zts-stretch ./php/
+docker build -f ./php/7.2-zts-buster -t californiasvaluedtrust/php:7.2-zts-buster ./php/
 docker build -f ./php/7.2-zts-stretch-xdebug -t californiasvaluedtrust/php:7.2-zts-stretch-xdebug ./php/
 
 docker build -f ./php/7.3-zts-stretch -t californiasvaluedtrust/php:7.3-zts-stretch ./php/
 
 docker build -f ./php/7.4-zts-buster -t californiasvaluedtrust/php:7.4-zts-buster ./php/
+docker build -f ./php/7.4-zts-bullseye -t californiasvaluedtrust/php:7.4-zts-bullseye ./php/
 
-docker build -f ./php/8-zts-buster -t californiasvaluedtrust/php:8-zts-buster ./php/
-docker build -f ./php/8.1-zts-buster -t californiasvaluedtrust/php:8.1-zts-buster ./php/
-docker build -f ./php/8.2-zts-bookworm -t californiasvaluedtrust/php:8.2-zts-bookworm ./php/
+docker build -f ./php/8.2-zts-bookworm --no-cache -t californiasvaluedtrust/php:8.2-zts-bookworm ./php/
+docker build -f ./php/8.2-zts-swoole-bookworm --no-cache -t californiasvaluedtrust/php:8.2-zts-swoole-bookworm ./php/
 ```
 
 #### Testing
@@ -41,15 +42,17 @@ docker push californiasvaluedtrust/php:7.2-fpm-alpine
 docker push californiasvaluedtrust/php:7.2-fpm-alpine-xdebug
 
 docker push californiasvaluedtrust/php:7.2-fpm-stretch
+docker push californiasvaluedtrust/php:7.2-zts-buster
 docker push californiasvaluedtrust/php:7.2-fpm-stretch-xdebug
 
 docker push californiasvaluedtrust/php:7.3-zts-stretch
 docker push californiasvaluedtrust/php:7.3-zts-stretch-xdebug
 
 docker push californiasvaluedtrust/php:7.4-zts-buster
+docker push californiasvaluedtrust/php:7.4-zts-bullseye
 
 docker push californiasvaluedtrust/php:8-zts-buster
 docker push californiasvaluedtrust/php:8.2-zts-bookworm
-docker push 
+docker push californiasvaluedtrust/php:8.2-zts-swoole-bookworm
 
 ```

@@ -22,8 +22,8 @@ services:
   composer-install:
     image: californiasvaluedtrust/php:${PHP_IMAGE}
     volumes:
-    - ./:/app
-    command: composer install -q
+    - ./:/var/www
+    command: tail -f /dev/null
 
   sql-server:
     image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu

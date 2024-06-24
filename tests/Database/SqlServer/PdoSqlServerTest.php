@@ -20,9 +20,9 @@ class PdoSqlServerTest extends DatabaseTestCase
     /**
      * @var \PDO
      */
-    private \PDO $dbh2008;
+    private $dbh2008;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
