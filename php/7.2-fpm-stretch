@@ -1,4 +1,4 @@
-FROM php:7.2.34-fpm-buster
+FROM php:7.2-fpm-stretch
 
 ENV RABBITMQ_VERSION v0.8.0
 ENV PHP_AMQP_VERSION v1.9.3
@@ -13,66 +13,61 @@ ENV PHPIZE_DEPS \
     gcc \
     libc-dev \
     make \
+    git \
     re2c
 
 ENV ACCEPT_EULA=Y
 
-RUN sed -i 's#deb.debian.org#mirrors.aliyun.com#g' /etc/apt/sources.list
-RUN sed -i 's#security.debian.org#mirrors.aliyun.com#g' /etc/apt/sources.list
-
+# Microsoft SQL Server Prerequisites
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends $PHPIZE_DEPS \
+    && apt-get install -y $PHPIZE_DEPS \
         libgpgme11-dev \
         gnupg2 \
-        libcurl4 \
         wget \
+        libsodium-dev \
         zlib1g-dev \
-        libzip-dev \
-        libldap-common \
-        libldap2-dev \
-        locales \
-        git \
-        apt-transport-https \
-    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
-    && locale-gen
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+        && curl https://packages.microsoft.com/config/debian/8/prod.list \
+            > /etc/apt/sources.list.d/mssql-release.list \
+        && apt-get install -y --no-install-recommends \
+            locales \
+            apt-transport-https \
+        && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+        && locale-gen \
+        && apt-get update \
+        && apt-get -y --no-install-recommends install msodbcsql unixodbc-dev libxml2 libldap2-dev libicu-dev \
+        && wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u12_amd64.deb \
+        && dpkg -i libssl1.0.0_1.0.1t-1+deb8u12_amd64.deb \
+        && rm -f libssl1.0.0_1.0.1t-1+deb8u12_amd64.deb
 
-RUN docker-php-ext-install pdo ldap pcntl bcmath zip
-#    && pecl install gnupg libsodium
-
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-      && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-      && apt-get update -yqq \
-      # Install Dependencies
-      && ACCEPT_EULA=Y apt-get install -y libssl-dev unixodbc unixodbc-dev libgss3 odbcinst msodbcsql17 \
-      && pecl install pdo_sqlsrv-5.8.1 sqlsrv-5.8.1 \
-      && docker-php-ext-enable pdo_sqlsrv sqlsrv \
-      && sed -i -E 's/(CipherString\s*=\s*DEFAULT@SECLEVEL=)2/\11/' /etc/ssl/openssl.cnf \
-      && php -m | grep -q 'pdo_sqlsrv' \
-      && php -m | grep -q 'sqlsrv'
-
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer self-update --1 \
-    && export COMPOSER_MEMORY_LIMIT=-1
-
-RUN git clone --branch ${PHP_REDIS_VERSION} https://github.com/phpredis/phpredis /tmp/phpredis \
-    && cd /tmp/phpredis \
-    && phpize  \
-    && ./configure  \
-    && make  \
-    && make install \
-    && make test
-
-RUN apt-get remove -y $PHPIZE_DEPS \
+RUN docker-php-ext-install \
+        pdo \
+        ldap \
+        intl \
+        pcntl \
+        bcmath \
+        zip \
+    && pecl install sqlsrv pdo_sqlsrv gnupg libsodium \
+    && git clone --branch ${PHP_REDIS_VERSION} https://github.com/phpredis/phpredis /tmp/phpredis \
+        && cd /tmp/phpredis \
+        && phpize  \
+        && ./configure  \
+        && make  \
+        && make install \
+        && make test \
+    && docker-php-ext-enable sqlsrv pdo_sqlsrv \
+    && apt-get remove -y $PHPIZE_DEPS \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/www \
     && mkdir /var/www
+
 
 # Copy configuration
 COPY config/php.ini /usr/local/etc/php/
 COPY config/php7.ini /usr/local/etc/php/conf.d/
 COPY config/redis.ini /usr/local/etc/php/conf.d/
 COPY config/fpm/php-fpm.conf /usr/local/etc/
-#COPY config/fpm/pool.d /usr/local/etc/pool.d
+COPY config/fpm/pool.d /usr/local/etc/pool.d
 
 WORKDIR /var/www
