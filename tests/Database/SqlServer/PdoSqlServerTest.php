@@ -15,7 +15,10 @@ class PdoSqlServerTest extends DatabaseTestCase
 {
     private \PDO $dbh2017;
 
-    private \PDO $dbh2008;
+    /**
+     * @var \PDO
+     */
+    private $dbh2008;
 
     protected function setUp(): void
     {

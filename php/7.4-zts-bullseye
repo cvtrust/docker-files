@@ -1,4 +1,4 @@
-FROM php:7.4.0-zts-buster
+FROM php:7.4-zts-bullseye
 
 ENV PHP_REDIS_VERSION 5.1.1
 
@@ -11,10 +11,12 @@ ENV PHPIZE_DEPS \
     gcc \
     libc-dev \
     make \
-    git \
     re2c
 
 ENV ACCEPT_EULA=Y
+
+RUN sed -i 's#deb.debian.org#mirrors.aliyun.com#g' /etc/apt/sources.list
+RUN sed -i 's#security.debian.org#mirrors.aliyun.com#g' /etc/apt/sources.list
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends $PHPIZE_DEPS \
@@ -22,21 +24,25 @@ RUN apt-get update \
         gnupg2 \
         libcurl4 \
         wget \
+        libxml2-dev \
+        libxml2 \
         zlib1g-dev \
         libzip-dev \
         libldap-common \
         libldap2-dev \
         locales \
+        git \
         apt-transport-https \
     && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
     && locale-gen
 
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-      && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-      && apt-get update -yqq \
-      # Install Dependencies
-      && ACCEPT_EULA=Y apt-get install -y libssl-dev unixodbc unixodbc-dev libgss3 odbcinst msodbcsql17 \
-      && pecl install pdo_sqlsrv sqlsrv \
+      && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+      && apt-get update -yqq
+
+# Install Dependencies
+RUN ACCEPT_EULA=Y apt-get install --no-install-recommends -y libssl-dev unixodbc unixodbc-dev libgss3 odbcinst msodbcsql17 \
+      && pecl install pdo_sqlsrv-5.10.0 sqlsrv-5.10.0 \
       && docker-php-ext-enable pdo_sqlsrv sqlsrv \
       && sed -i -E 's/(CipherString\s*=\s*DEFAULT@SECLEVEL=)2/\11/' /etc/ssl/openssl.cnf \
       && php -m | grep -q 'pdo_sqlsrv' \
@@ -56,7 +62,8 @@ RUN docker-php-ext-install \
         && make install \
         && make test \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer global require hirak/prestissimo
+    && composer self-update \
+    && export COMPOSER_MEMORY_LIMIT=-1
 
 
 RUN apt-get remove -y $PHPIZE_DEPS \
